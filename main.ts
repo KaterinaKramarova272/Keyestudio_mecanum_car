@@ -134,16 +134,29 @@ function ovladac() {
     bluetooth.startUartService()
 
     bluetooth.onBluetoothConnected(function () {
-        basic.showString("connected")
+        basic.showString("c")
         pripojeni = true
         while (pripojeni = true) {
             bluetooth.uartReadUntil(serial.delimiters(Delimiters.Hash))
-
+            serial.writeString(buttons)
+            serial.writeLine("")
+            if (buttons == "a") {
+                dopredu ()
+            }
+            if (buttons == "b") {
+                doleva ()
+            }
+            if (buttons == "c") {
+                dozadu()
+            }
+            if (buttons == "d") {
+                doprava()
+            }
         }
     })
 
     bluetooth.onBluetoothDisconnected(function () {
-        basic.showString("disconnected")
+        basic.showString("d")
         pripojeni = false
     })
 
