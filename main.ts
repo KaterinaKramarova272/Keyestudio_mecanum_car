@@ -4,97 +4,121 @@ mecanumRobot.setServo(90)
 basic.showString("mode?")
 
 input.onButtonPressed(Button.A, function () {
-    samojezditko()
+    independent_driving()
 })
 input.onButtonPressed(Button.B, function () {
-    nasledovani()
+    follow()
 })
 input.onButtonPressed(Button.AB, function () {
-    linka()
+    line()
 })
 input.onLogoEvent(TouchButtonEvent.Pressed, function () {
-    ovladac()
+    controller ()
 })
 //Funkce směru jízdy
-function dopredu() {
-    mecanumRobot.Motor(LR.Upper_left, MD.Back, 45)
-    mecanumRobot.Motor(LR.Upper_right, MD.Forward, 55)
-    mecanumRobot.Motor(LR.Lower_left, MD.Forward, 45)
-    mecanumRobot.Motor(LR.Lower_right, MD.Back, 55)
+let speed = 65
+let speed_df = 20
+let k = 1.27
+function fwd() {
+    mecanumRobot.Motor(LR.Upper_left, MD.Back, speed)
+    mecanumRobot.Motor(LR.Upper_right, MD.Forward, speed * k)
+    mecanumRobot.Motor(LR.Lower_left, MD.Forward, speed)
+    mecanumRobot.Motor(LR.Lower_right, MD.Back, speed)
 }
-function doleva() {
-    mecanumRobot.Motor(LR.Upper_left, MD.Forward, 45)
-    mecanumRobot.Motor(LR.Upper_right, MD.Forward, 55)
-    mecanumRobot.Motor(LR.Lower_left, MD.Back, 45)
-    mecanumRobot.Motor(LR.Lower_right, MD.Back, 55)
+function lft() {
+    mecanumRobot.Motor(LR.Upper_left, MD.Forward, speed)
+    mecanumRobot.Motor(LR.Upper_right, MD.Forward, speed * k)
+    mecanumRobot.Motor(LR.Lower_left, MD.Back, speed)
+    mecanumRobot.Motor(LR.Lower_right, MD.Back, speed)
 }
-function doprava() {
-    mecanumRobot.Motor(LR.Upper_left, MD.Back, 45)
-    mecanumRobot.Motor(LR.Upper_right, MD.Back, 55)
-    mecanumRobot.Motor(LR.Lower_left, MD.Forward, 45)
-    mecanumRobot.Motor(LR.Lower_right, MD.Forward, 55)
+function rgt() {
+    mecanumRobot.Motor(LR.Upper_left, MD.Back, speed)
+    mecanumRobot.Motor(LR.Upper_right, MD.Back, speed * k)
+    mecanumRobot.Motor(LR.Lower_left, MD.Forward, speed)
+    mecanumRobot.Motor(LR.Lower_right, MD.Forward, speed)
 }
-function dozadu() {
-    mecanumRobot.Motor(LR.Upper_left, MD.Forward, 45)
-    mecanumRobot.Motor(LR.Upper_right, MD.Back, 55)
-    mecanumRobot.Motor(LR.Lower_left, MD.Back, 45)
-    mecanumRobot.Motor(LR.Lower_right, MD.Forward, 55)
+function bck() {
+    mecanumRobot.Motor(LR.Upper_left, MD.Forward, speed)
+    mecanumRobot.Motor(LR.Upper_right, MD.Back, speed * k)
+    mecanumRobot.Motor(LR.Lower_left, MD.Back, speed)
+    mecanumRobot.Motor(LR.Lower_right, MD.Forward, speed)
+}
+function fwd_df() {
+    mecanumRobot.Motor(LR.Upper_left, MD.Back, speed_df)
+    mecanumRobot.Motor(LR.Upper_right, MD.Forward, speed_df * k)
+    mecanumRobot.Motor(LR.Lower_left, MD.Forward, speed_df)
+    mecanumRobot.Motor(LR.Lower_right, MD.Back, speed_df)
+}
+function lft_df() {
+    mecanumRobot.Motor(LR.Upper_left, MD.Forward, speed_df)
+    mecanumRobot.Motor(LR.Upper_right, MD.Forward, speed_df * k)
+    mecanumRobot.Motor(LR.Lower_left, MD.Back, speed_df)
+    mecanumRobot.Motor(LR.Lower_right, MD.Back, speed_df)
+}
+function rgt_df () {
+    mecanumRobot.Motor(LR.Upper_left, MD.Back, speed_df)
+    mecanumRobot.Motor(LR.Upper_right, MD.Back, speed_df)
+    mecanumRobot.Motor(LR.Lower_left, MD.Forward, speed_df)
+    mecanumRobot.Motor(LR.Lower_right, MD.Forward, speed_df)
+}
+function bck_df() {
+    mecanumRobot.Motor(LR.Upper_left, MD.Forward, speed_df)
+    mecanumRobot.Motor(LR.Upper_right, MD.Back, speed_df * k)
+    mecanumRobot.Motor(LR.Lower_left, MD.Back, speed_df)
+    mecanumRobot.Motor(LR.Lower_right, MD.Forward, speed_df)
 }
 //funkce samotného ježdění
-function samojezditko() {
-    let vzdalenost = 0
-    let vzdalenostl = 0
-    let vzdalenostp = 0
+function independent_driving () {
+    let dst = 0
+    let dst_lf = 0
+    let dst_rt = 0
 
-    basic.showString("mode1")
-    basic.pause(1000)
+    basic.showString("m1")
+    basic.pause(500)
 
     basic.forever(function () {
-        vzdalenost = mecanumRobot.ultra()
-        if (vzdalenost < 30) {
+        dst = mecanumRobot.ultra()
+        if (dst < 30) {
             mecanumRobot.state(MotorState.stop)
             basic.pause(1000)
             mecanumRobot.setServo(0)
             basic.pause(1000)
-            vzdalenostp = mecanumRobot.ultra()
+            dst_rt = mecanumRobot.ultra()
             mecanumRobot.setServo(180)
             basic.pause(1000)
-            vzdalenostl = mecanumRobot.ultra()
-            if (vzdalenostl < vzdalenostp) {
-                doprava()
+            dst_rt = mecanumRobot.ultra()
+            if (dst_lf < dst_rt) {
+                rgt()
                 mecanumRobot.setServo(90)
-                basic.pause(400)
+                basic.pause(500)
             }
             else {
-                doleva()
+                lft()
                 mecanumRobot.setServo(90)
-                basic.pause(400)
+                basic.pause(500)
             }
 
         }
         else {
-            dopredu()
+            fwd()
         }
     })
 
 }
 //funkce nasledování objektu
-function nasledovani() {
-    basic.showString("mode2")
-    basic.pause(1000)
+function follow() {
+    basic.showString("m2")
+    basic.pause(500)
 
     basic.forever(function () {
-        let vzdalenost = 0
+        let distance = 0
 
-        vzdalenost = mecanumRobot.ultra()
-        if (vzdalenost < 20) {
-            dozadu()
-        }
-        if (vzdalenost < 30) {
+        distance = mecanumRobot.ultra()
+        if (distance < 30) {
             mecanumRobot.state(MotorState.stop)
         }
-        if (vzdalenost < 50) {
-            dopredu()
+        if (distance < 75) {
+            fwd()
         }
         else {
             mecanumRobot.state(MotorState.stop)
@@ -104,20 +128,19 @@ function nasledovani() {
 
 }
 //funkce ježdění podle čáry
-function linka() {
-    basic.showString("mode3")
-    basic.pause(1000)
+function line() {
+    basic.showString("m3")
+    basic.pause(500)
 
     basic.forever(function () {
-        let linetrack = 0
         if (mecanumRobot.LineTracking(LT.Left) == 0 && mecanumRobot.LineTracking(LT.Right) == 1) {
-            doprava()
+            rgt_df()
         }
         else if (mecanumRobot.LineTracking(LT.Left) == 1 && mecanumRobot.LineTracking(LT.Right) == 0) {
-            doleva()
+            lft_df()
         }
         else if (mecanumRobot.LineTracking(LT.Left) == 1 && mecanumRobot.LineTracking(LT.Right) == 1) {
-            dopredu()
+            fwd_df()
         }
         else {
             mecanumRobot.state(MotorState.stop)
@@ -125,39 +148,38 @@ function linka() {
     })
 }
 //funkce spojení vozidla s mobilovou aplikací a následné řízení 
-function ovladac() {
-    let buttons = ""
-    let pripojeni: boolean = false
-
-    basic.showString("mode4")
+function controller() {
+    let connection: boolean = false
+    basic.showString("m4")
     basic.pause(1000)
     bluetooth.startUartService()
 
     bluetooth.onBluetoothConnected(function () {
         basic.showString("c")
-        pripojeni = true
-        while (pripojeni = true) {
-            bluetooth.uartReadUntil(serial.delimiters(Delimiters.Hash))
+        connection = true
+        let buttons = ""
+        while (connection = true) {
+            buttons = bluetooth.uartReadUntil(serial.delimiters(Delimiters.Hash))
             serial.writeString(buttons)
             serial.writeLine("")
             if (buttons == "a") {
-                dopredu ()
-            }
-            if (buttons == "b") {
-                doleva ()
-            }
-            if (buttons == "c") {
-                dozadu()
-            }
-            if (buttons == "d") {
-                doprava()
+                fwd()
+            } else if (buttons == "b") {
+                lft()
+            } else if (buttons == "c") {
+                bck ()
+            } else if (buttons == "d") {
+                rgt()
+            }else if (buttons == "s") {
+                mecanumRobot.state(MotorState.stop)
+                mecanumRobot.setServo(90)
             }
         }
     })
-
+    
     bluetooth.onBluetoothDisconnected(function () {
         basic.showString("d")
-        pripojeni = false
+        connection = false
     })
 
 }
